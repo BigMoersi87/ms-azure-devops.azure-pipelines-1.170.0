@@ -1,0 +1,942 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="15.0.2000.5">
+	<BatchSequence>
+		<Batch>
+			<Statements>
+				<StmtSimple StatementText="declare @condition tinyint;&#xd;&#xa;SET @condition = 24;&#xd;&#xa;" StatementId="1" StatementCompId="1" StatementType="ASSIGN" RetrievedFromCache="true">
+				</StmtSimple>
+				<StmtSimple StatementText="with&#xd;&#xa;    backupInsight_cte (database_id, last_backup, health_check)&#xd;&#xa;    as&#xd;&#xa;    (&#xd;&#xa;        select d.database_id, max(b.backup_start_date) AS last_backup, case when (datediff( hh , max(b.backup_start_date) , getdate()) &lt; @condition) then 1 else 0 end as health_check&#xd;&#xa;        from sys.databases as d left join msdb..backupset as b on d.name = b.database_name&#xd;&#xa;        where d.database_id &gt; 4&#xd;&#xa;        group by d.database_id&#xd;&#xa;    )&#xd;&#xa;select&#xd;&#xa;    coalesce(sum(health_check),0) [Within 24hrs],&#xd;&#xa;    coalesce(sum(case when health_check = 0 AND last_backup IS NOT NULL then 1 else 0 end),0) [Older than 24hrs],&#xd;&#xa;    coalesce(sum(case when health_check = 0 AND last_backup IS NULL then 1 else 0 end),0) [No backup found]&#xd;&#xa;from backupInsight_cte" StatementId="2" StatementCompId="2" StatementType="SELECT" RetrievedFromCache="true" StatementSubTreeCost="0.00658348" StatementEstRows="1" SecurityPolicyApplied="false" StatementOptmLevel="FULL" QueryHash="0xC45E64FB33793434" QueryPlanHash="0x13175B10F92B1347" StatementOptmEarlyAbortReason="GoodEnoughPlanFound" CardinalityEstimationModelVersion="150">
+					<StatementSetOptions QUOTED_IDENTIFIER="true" ARITHABORT="true" CONCAT_NULL_YIELDS_NULL="true" ANSI_NULLS="true" ANSI_PADDING="true" ANSI_WARNINGS="true" NUMERIC_ROUNDABORT="false">
+					</StatementSetOptions>
+					<QueryPlan NonParallelPlanReason="CouldNotGenerateValidParallelPlan" CachedPlanSize="104" CompileTime="19" CompileCPU="19" CompileMemory="4216">
+						<MemoryGrantInfo SerialRequiredMemory="0" SerialDesiredMemory="0" GrantedMemory="0" MaxUsedMemory="0">
+						</MemoryGrantInfo>
+						<OptimizerHardwareDependentProperties EstimatedAvailableMemoryGrant="209287" EstimatedPagesCached="52321" EstimatedAvailableDegreeOfParallelism="2" MaxCompileMemory="2293080">
+						</OptimizerHardwareDependentProperties>
+						<OptimizerStatsUsage>
+							<StatisticsInfo LastUpdate="2009-04-13T12:59:17.03" ModificationCount="14" SamplingPercent="100" Statistics="[clst]" Table="[sysdbreg]" Schema="[sys]" Database="[master]">
+							</StatisticsInfo>
+						</OptimizerStatsUsage>
+						<RelOp NodeId="0" PhysicalOp="Compute Scalar" LogicalOp="Compute Scalar" EstimateRows="1" EstimateIO="0" EstimateCPU="1e-07" AvgRowSize="19" EstimatedTotalSubtreeCost="0.00658348" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+							<OutputList>
+								<ColumnReference Column="Expr1090">
+								</ColumnReference>
+								<ColumnReference Column="Expr1091">
+								</ColumnReference>
+								<ColumnReference Column="Expr1092">
+								</ColumnReference>
+							</OutputList>
+							<ComputeScalar>
+								<DefinedValues>
+									<DefinedValue>
+										<ColumnReference Column="Expr1090">
+										</ColumnReference>
+										<ScalarOperator ScalarString="CASE WHEN [Expr1087] IS NOT NULL THEN [Expr1087] ELSE (0) END">
+											<IF>
+												<Condition>
+													<ScalarOperator>
+														<Compare CompareOp="IS NOT">
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1087">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Compare>
+													</ScalarOperator>
+												</Condition>
+												<Then>
+													<ScalarOperator>
+														<Identifier>
+															<ColumnReference Column="Expr1087">
+															</ColumnReference>
+														</Identifier>
+													</ScalarOperator>
+												</Then>
+												<Else>
+													<ScalarOperator>
+														<Const ConstValue="(0)">
+														</Const>
+													</ScalarOperator>
+												</Else>
+											</IF>
+										</ScalarOperator>
+									</DefinedValue>
+									<DefinedValue>
+										<ColumnReference Column="Expr1091">
+										</ColumnReference>
+										<ScalarOperator ScalarString="CASE WHEN [Expr1088] IS NOT NULL THEN [Expr1088] ELSE (0) END">
+											<IF>
+												<Condition>
+													<ScalarOperator>
+														<Compare CompareOp="IS NOT">
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1088">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Compare>
+													</ScalarOperator>
+												</Condition>
+												<Then>
+													<ScalarOperator>
+														<Identifier>
+															<ColumnReference Column="Expr1088">
+															</ColumnReference>
+														</Identifier>
+													</ScalarOperator>
+												</Then>
+												<Else>
+													<ScalarOperator>
+														<Const ConstValue="(0)">
+														</Const>
+													</ScalarOperator>
+												</Else>
+											</IF>
+										</ScalarOperator>
+									</DefinedValue>
+									<DefinedValue>
+										<ColumnReference Column="Expr1092">
+										</ColumnReference>
+										<ScalarOperator ScalarString="CASE WHEN [Expr1089] IS NOT NULL THEN [Expr1089] ELSE (0) END">
+											<IF>
+												<Condition>
+													<ScalarOperator>
+														<Compare CompareOp="IS NOT">
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1089">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Compare>
+													</ScalarOperator>
+												</Condition>
+												<Then>
+													<ScalarOperator>
+														<Identifier>
+															<ColumnReference Column="Expr1089">
+															</ColumnReference>
+														</Identifier>
+													</ScalarOperator>
+												</Then>
+												<Else>
+													<ScalarOperator>
+														<Const ConstValue="(0)">
+														</Const>
+													</ScalarOperator>
+												</Else>
+											</IF>
+										</ScalarOperator>
+									</DefinedValue>
+								</DefinedValues>
+								<RelOp NodeId="1" PhysicalOp="Compute Scalar" LogicalOp="Compute Scalar" EstimateRows="1" EstimateIO="0" EstimateCPU="0" AvgRowSize="19" EstimatedTotalSubtreeCost="0.00658338" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+									<OutputList>
+										<ColumnReference Column="Expr1087">
+										</ColumnReference>
+										<ColumnReference Column="Expr1088">
+										</ColumnReference>
+										<ColumnReference Column="Expr1089">
+										</ColumnReference>
+									</OutputList>
+									<ComputeScalar>
+										<DefinedValues>
+											<DefinedValue>
+												<ColumnReference Column="Expr1087">
+												</ColumnReference>
+												<ScalarOperator ScalarString="CASE WHEN [Expr1118]=(0) THEN NULL ELSE [Expr1119] END">
+													<IF>
+														<Condition>
+															<ScalarOperator>
+																<Compare CompareOp="EQ">
+																	<ScalarOperator>
+																		<Identifier>
+																			<ColumnReference Column="Expr1118">
+																			</ColumnReference>
+																		</Identifier>
+																	</ScalarOperator>
+																	<ScalarOperator>
+																		<Const ConstValue="(0)">
+																		</Const>
+																	</ScalarOperator>
+																</Compare>
+															</ScalarOperator>
+														</Condition>
+														<Then>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Then>
+														<Else>
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1119">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+														</Else>
+													</IF>
+												</ScalarOperator>
+											</DefinedValue>
+											<DefinedValue>
+												<ColumnReference Column="Expr1088">
+												</ColumnReference>
+												<ScalarOperator ScalarString="CASE WHEN [Expr1118]=(0) THEN NULL ELSE [Expr1120] END">
+													<IF>
+														<Condition>
+															<ScalarOperator>
+																<Compare CompareOp="EQ">
+																	<ScalarOperator>
+																		<Identifier>
+																			<ColumnReference Column="Expr1118">
+																			</ColumnReference>
+																		</Identifier>
+																	</ScalarOperator>
+																	<ScalarOperator>
+																		<Const ConstValue="(0)">
+																		</Const>
+																	</ScalarOperator>
+																</Compare>
+															</ScalarOperator>
+														</Condition>
+														<Then>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Then>
+														<Else>
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1120">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+														</Else>
+													</IF>
+												</ScalarOperator>
+											</DefinedValue>
+											<DefinedValue>
+												<ColumnReference Column="Expr1089">
+												</ColumnReference>
+												<ScalarOperator ScalarString="CASE WHEN [Expr1118]=(0) THEN NULL ELSE [Expr1121] END">
+													<IF>
+														<Condition>
+															<ScalarOperator>
+																<Compare CompareOp="EQ">
+																	<ScalarOperator>
+																		<Identifier>
+																			<ColumnReference Column="Expr1118">
+																			</ColumnReference>
+																		</Identifier>
+																	</ScalarOperator>
+																	<ScalarOperator>
+																		<Const ConstValue="(0)">
+																		</Const>
+																	</ScalarOperator>
+																</Compare>
+															</ScalarOperator>
+														</Condition>
+														<Then>
+															<ScalarOperator>
+																<Const ConstValue="NULL">
+																</Const>
+															</ScalarOperator>
+														</Then>
+														<Else>
+															<ScalarOperator>
+																<Identifier>
+																	<ColumnReference Column="Expr1121">
+																	</ColumnReference>
+																</Identifier>
+															</ScalarOperator>
+														</Else>
+													</IF>
+												</ScalarOperator>
+											</DefinedValue>
+										</DefinedValues>
+										<RelOp NodeId="2" PhysicalOp="Stream Aggregate" LogicalOp="Aggregate" EstimateRows="1" EstimateIO="0" EstimateCPU="1.1e-06" AvgRowSize="19" EstimatedTotalSubtreeCost="0.00658338" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+											<OutputList>
+												<ColumnReference Column="Expr1118">
+												</ColumnReference>
+												<ColumnReference Column="Expr1119">
+												</ColumnReference>
+												<ColumnReference Column="Expr1120">
+												</ColumnReference>
+												<ColumnReference Column="Expr1121">
+												</ColumnReference>
+											</OutputList>
+											<StreamAggregate>
+												<DefinedValues>
+													<DefinedValue>
+														<ColumnReference Column="Expr1118">
+														</ColumnReference>
+														<ScalarOperator ScalarString="Count(*)">
+															<Aggregate AggType="countstar" Distinct="0">
+															</Aggregate>
+														</ScalarOperator>
+													</DefinedValue>
+													<DefinedValue>
+														<ColumnReference Column="Expr1119">
+														</ColumnReference>
+														<ScalarOperator ScalarString="SUM(CASE WHEN datediff(hour,[Expr1085],getdate())&lt;CONVERT_IMPLICIT(int,[@condition],0) THEN (1) ELSE (0) END)">
+															<Aggregate Distinct="0" AggType="SUM">
+																<ScalarOperator>
+																	<IF>
+																		<Condition>
+																			<ScalarOperator>
+																				<Compare CompareOp="LT">
+																					<ScalarOperator>
+																						<Intrinsic FunctionName="datediff">
+																							<ScalarOperator>
+																								<Const ConstValue="(6)">
+																								</Const>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Identifier>
+																									<ColumnReference Column="Expr1085">
+																									</ColumnReference>
+																								</Identifier>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Identifier>
+																									<ColumnReference Column="ConstExpr1116">
+																										<ScalarOperator>
+																											<Intrinsic FunctionName="getdate">
+																											</Intrinsic>
+																										</ScalarOperator>
+																									</ColumnReference>
+																								</Identifier>
+																							</ScalarOperator>
+																						</Intrinsic>
+																					</ScalarOperator>
+																					<ScalarOperator>
+																						<Convert DataType="int" Style="0" Implicit="1">
+																							<ScalarOperator>
+																								<Identifier>
+																									<ColumnReference Column="@condition">
+																									</ColumnReference>
+																								</Identifier>
+																							</ScalarOperator>
+																						</Convert>
+																					</ScalarOperator>
+																				</Compare>
+																			</ScalarOperator>
+																		</Condition>
+																		<Then>
+																			<ScalarOperator>
+																				<Const ConstValue="(1)">
+																				</Const>
+																			</ScalarOperator>
+																		</Then>
+																		<Else>
+																			<ScalarOperator>
+																				<Const ConstValue="(0)">
+																				</Const>
+																			</ScalarOperator>
+																		</Else>
+																	</IF>
+																</ScalarOperator>
+															</Aggregate>
+														</ScalarOperator>
+													</DefinedValue>
+													<DefinedValue>
+														<ColumnReference Column="Expr1120">
+														</ColumnReference>
+														<ScalarOperator ScalarString="SUM(CASE WHEN CASE WHEN datediff(hour,[Expr1085],getdate())&lt;CONVERT_IMPLICIT(int,[@condition],0) THEN (1) ELSE (0) END=(0) AND [Expr1085] IS NOT NULL THEN (1) ELSE (0) END)">
+															<Aggregate Distinct="0" AggType="SUM">
+																<ScalarOperator>
+																	<IF>
+																		<Condition>
+																			<ScalarOperator>
+																				<Logical Operation="AND">
+																					<ScalarOperator>
+																						<Compare CompareOp="EQ">
+																							<ScalarOperator>
+																								<IF>
+																									<Condition>
+																										<ScalarOperator>
+																											<Compare CompareOp="LT">
+																												<ScalarOperator>
+																													<Intrinsic FunctionName="datediff">
+																														<ScalarOperator>
+																															<Const ConstValue="(6)">
+																															</Const>
+																														</ScalarOperator>
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="Expr1085">
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="ConstExpr1116">
+																																	<ScalarOperator>
+																																		<Intrinsic FunctionName="getdate">
+																																		</Intrinsic>
+																																	</ScalarOperator>
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																													</Intrinsic>
+																												</ScalarOperator>
+																												<ScalarOperator>
+																													<Convert DataType="int" Style="0" Implicit="1">
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="@condition">
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																													</Convert>
+																												</ScalarOperator>
+																											</Compare>
+																										</ScalarOperator>
+																									</Condition>
+																									<Then>
+																										<ScalarOperator>
+																											<Const ConstValue="(1)">
+																											</Const>
+																										</ScalarOperator>
+																									</Then>
+																									<Else>
+																										<ScalarOperator>
+																											<Const ConstValue="(0)">
+																											</Const>
+																										</ScalarOperator>
+																									</Else>
+																								</IF>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Const ConstValue="(0)">
+																								</Const>
+																							</ScalarOperator>
+																						</Compare>
+																					</ScalarOperator>
+																					<ScalarOperator>
+																						<Compare CompareOp="IS NOT">
+																							<ScalarOperator>
+																								<Identifier>
+																									<ColumnReference Column="Expr1085">
+																									</ColumnReference>
+																								</Identifier>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Const ConstValue="NULL">
+																								</Const>
+																							</ScalarOperator>
+																						</Compare>
+																					</ScalarOperator>
+																				</Logical>
+																			</ScalarOperator>
+																		</Condition>
+																		<Then>
+																			<ScalarOperator>
+																				<Const ConstValue="(1)">
+																				</Const>
+																			</ScalarOperator>
+																		</Then>
+																		<Else>
+																			<ScalarOperator>
+																				<Const ConstValue="(0)">
+																				</Const>
+																			</ScalarOperator>
+																		</Else>
+																	</IF>
+																</ScalarOperator>
+															</Aggregate>
+														</ScalarOperator>
+													</DefinedValue>
+													<DefinedValue>
+														<ColumnReference Column="Expr1121">
+														</ColumnReference>
+														<ScalarOperator ScalarString="SUM(CASE WHEN CASE WHEN datediff(hour,[Expr1085],getdate())&lt;CONVERT_IMPLICIT(int,[@condition],0) THEN (1) ELSE (0) END=(0) AND [Expr1085] IS NULL THEN (1) ELSE (0) END)">
+															<Aggregate Distinct="0" AggType="SUM">
+																<ScalarOperator>
+																	<IF>
+																		<Condition>
+																			<ScalarOperator>
+																				<Logical Operation="AND">
+																					<ScalarOperator>
+																						<Compare CompareOp="EQ">
+																							<ScalarOperator>
+																								<IF>
+																									<Condition>
+																										<ScalarOperator>
+																											<Compare CompareOp="LT">
+																												<ScalarOperator>
+																													<Intrinsic FunctionName="datediff">
+																														<ScalarOperator>
+																															<Const ConstValue="(6)">
+																															</Const>
+																														</ScalarOperator>
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="Expr1085">
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="ConstExpr1116">
+																																	<ScalarOperator>
+																																		<Intrinsic FunctionName="getdate">
+																																		</Intrinsic>
+																																	</ScalarOperator>
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																													</Intrinsic>
+																												</ScalarOperator>
+																												<ScalarOperator>
+																													<Convert DataType="int" Style="0" Implicit="1">
+																														<ScalarOperator>
+																															<Identifier>
+																																<ColumnReference Column="@condition">
+																																</ColumnReference>
+																															</Identifier>
+																														</ScalarOperator>
+																													</Convert>
+																												</ScalarOperator>
+																											</Compare>
+																										</ScalarOperator>
+																									</Condition>
+																									<Then>
+																										<ScalarOperator>
+																											<Const ConstValue="(1)">
+																											</Const>
+																										</ScalarOperator>
+																									</Then>
+																									<Else>
+																										<ScalarOperator>
+																											<Const ConstValue="(0)">
+																											</Const>
+																										</ScalarOperator>
+																									</Else>
+																								</IF>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Const ConstValue="(0)">
+																								</Const>
+																							</ScalarOperator>
+																						</Compare>
+																					</ScalarOperator>
+																					<ScalarOperator>
+																						<Compare CompareOp="IS">
+																							<ScalarOperator>
+																								<Identifier>
+																									<ColumnReference Column="Expr1085">
+																									</ColumnReference>
+																								</Identifier>
+																							</ScalarOperator>
+																							<ScalarOperator>
+																								<Const ConstValue="NULL">
+																								</Const>
+																							</ScalarOperator>
+																						</Compare>
+																					</ScalarOperator>
+																				</Logical>
+																			</ScalarOperator>
+																		</Condition>
+																		<Then>
+																			<ScalarOperator>
+																				<Const ConstValue="(1)">
+																				</Const>
+																			</ScalarOperator>
+																		</Then>
+																		<Else>
+																			<ScalarOperator>
+																				<Const ConstValue="(0)">
+																				</Const>
+																			</ScalarOperator>
+																		</Else>
+																	</IF>
+																</ScalarOperator>
+															</Aggregate>
+														</ScalarOperator>
+													</DefinedValue>
+												</DefinedValues>
+												<RelOp NodeId="3" PhysicalOp="Stream Aggregate" LogicalOp="Aggregate" EstimateRows="1" EstimateIO="0" EstimateCPU="1.1e-06" AvgRowSize="15" EstimatedTotalSubtreeCost="0.00658228" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+													<OutputList>
+														<ColumnReference Column="Expr1085">
+														</ColumnReference>
+													</OutputList>
+													<StreamAggregate>
+														<DefinedValues>
+															<DefinedValue>
+																<ColumnReference Column="Expr1085">
+																</ColumnReference>
+																<ScalarOperator ScalarString="MAX([msdb].[dbo].[backupset].[backup_start_date] as [b].[backup_start_date])">
+																	<Aggregate Distinct="0" AggType="MAX">
+																		<ScalarOperator>
+																			<Identifier>
+																				<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="backup_start_date">
+																				</ColumnReference>
+																			</Identifier>
+																		</ScalarOperator>
+																	</Aggregate>
+																</ScalarOperator>
+															</DefinedValue>
+														</DefinedValues>
+														<GroupBy>
+															<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+															</ColumnReference>
+														</GroupBy>
+														<RelOp NodeId="4" PhysicalOp="Nested Loops" LogicalOp="Left Outer Join" EstimateRows="1" EstimateIO="0" EstimateCPU="4.18e-06" AvgRowSize="19" EstimatedTotalSubtreeCost="0.00658118" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+															<OutputList>
+																<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																</ColumnReference>
+																<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="backup_start_date">
+																</ColumnReference>
+															</OutputList>
+															<NestedLoops Optimized="0">
+																<Predicate>
+																	<ScalarOperator ScalarString="[Expr1117]=[msdb].[dbo].[backupset].[database_name] as [b].[database_name]">
+																		<Compare CompareOp="EQ">
+																			<ScalarOperator>
+																				<Identifier>
+																					<ColumnReference Column="Expr1117">
+																					</ColumnReference>
+																				</Identifier>
+																			</ScalarOperator>
+																			<ScalarOperator>
+																				<Identifier>
+																					<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="database_name">
+																					</ColumnReference>
+																				</Identifier>
+																			</ScalarOperator>
+																		</Compare>
+																	</ScalarOperator>
+																</Predicate>
+																<RelOp NodeId="5" PhysicalOp="Compute Scalar" LogicalOp="Compute Scalar" EstimateRows="1" EstimateIO="0" EstimateCPU="1e-07" AvgRowSize="143" EstimatedTotalSubtreeCost="0.0032936" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																	<OutputList>
+																		<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																		</ColumnReference>
+																		<ColumnReference Column="Expr1117">
+																		</ColumnReference>
+																	</OutputList>
+																	<ComputeScalar>
+																		<DefinedValues>
+																			<DefinedValue>
+																				<ColumnReference Column="Expr1117">
+																				</ColumnReference>
+																				<ScalarOperator ScalarString="CONVERT(nvarchar(128),isnull(DBPROP.[cl_logical_database_name],[master].[sys].[sysdbreg].[name]),0)">
+																					<Convert DataType="nvarchar" Length="256" Style="0" Implicit="0">
+																						<ScalarOperator>
+																							<Intrinsic FunctionName="isnull">
+																								<ScalarOperator>
+																									<Identifier>
+																										<ColumnReference Table="[DBPROP]" Column="cl_logical_database_name">
+																										</ColumnReference>
+																									</Identifier>
+																								</ScalarOperator>
+																								<ScalarOperator>
+																									<Identifier>
+																										<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="name">
+																										</ColumnReference>
+																									</Identifier>
+																								</ScalarOperator>
+																							</Intrinsic>
+																						</ScalarOperator>
+																					</Convert>
+																				</ScalarOperator>
+																			</DefinedValue>
+																		</DefinedValues>
+																		<RelOp NodeId="6" PhysicalOp="Nested Loops" LogicalOp="Left Outer Join" EstimateRows="1" EstimateIO="0" EstimateCPU="4.18e-06" AvgRowSize="273" EstimatedTotalSubtreeCost="0.0032935" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																			<OutputList>
+																				<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																				</ColumnReference>
+																				<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="name">
+																				</ColumnReference>
+																				<ColumnReference Table="[DBPROP]" Column="cl_logical_database_name">
+																				</ColumnReference>
+																			</OutputList>
+																			<NestedLoops Optimized="0">
+																				<OuterReferences>
+																					<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																					</ColumnReference>
+																				</OuterReferences>
+																				<RelOp NodeId="7" PhysicalOp="Filter" LogicalOp="Filter" EstimateRows="1" EstimateIO="0" EstimateCPU="3.96e-06" AvgRowSize="143" EstimatedTotalSubtreeCost="0.00328816" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																					<OutputList>
+																						<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																						</ColumnReference>
+																						<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="name">
+																						</ColumnReference>
+																					</OutputList>
+																					<Filter StartupExpression="0">
+																						<RelOp NodeId="8" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="2" EstimatedRowsRead="2" EstimateIO="0.003125" EstimateCPU="0.0001592" AvgRowSize="143" EstimatedTotalSubtreeCost="0.0032842" TableCardinality="6" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																							<OutputList>
+																								<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																								</ColumnReference>
+																								<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="name">
+																								</ColumnReference>
+																							</OutputList>
+																							<IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+																								<DefinedValues>
+																									<DefinedValue>
+																										<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																										</ColumnReference>
+																									</DefinedValue>
+																									<DefinedValue>
+																										<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="name">
+																										</ColumnReference>
+																									</DefinedValue>
+																								</DefinedValues>
+																								<Object Database="[master]" Schema="[sys]" Table="[sysdbreg]" Index="[clst]" IndexKind="Clustered" Storage="RowStore">
+																								</Object>
+																								<SeekPredicates>
+																									<SeekPredicateNew>
+																										<SeekKeys>
+																											<StartRange ScanType="GT">
+																												<RangeColumns>
+																													<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																													</ColumnReference>
+																												</RangeColumns>
+																												<RangeExpressions>
+																													<ScalarOperator ScalarString="(4)">
+																														<Const ConstValue="(4)">
+																														</Const>
+																													</ScalarOperator>
+																												</RangeExpressions>
+																											</StartRange>
+																											<EndRange ScanType="LT">
+																												<RangeColumns>
+																													<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																													</ColumnReference>
+																												</RangeColumns>
+																												<RangeExpressions>
+																													<ScalarOperator ScalarString="(32767)">
+																														<Const ConstValue="(32767)">
+																														</Const>
+																													</ScalarOperator>
+																												</RangeExpressions>
+																											</EndRange>
+																										</SeekKeys>
+																									</SeekPredicateNew>
+																								</SeekPredicates>
+																							</IndexScan>
+																						</RelOp>
+																						<Predicate>
+																							<ScalarOperator ScalarString="repl_sys_db_visible([master].[sys].[sysdbreg].[id])=(1) AND has_access(&apos;DB&apos;,CASE WHEN serverproperty(&apos;EngineEdition&apos;)=5 THEN CONVERT_IMPLICIT(int,db_id(),0) ELSE [master].[sys].[sysdbreg].[id] END)=(1)">
+																								<Logical Operation="AND">
+																									<ScalarOperator>
+																										<Compare CompareOp="EQ">
+																											<ScalarOperator>
+																												<Intrinsic FunctionName="repl_sys_db_visible">
+																													<ScalarOperator>
+																														<Identifier>
+																															<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																															</ColumnReference>
+																														</Identifier>
+																													</ScalarOperator>
+																												</Intrinsic>
+																											</ScalarOperator>
+																											<ScalarOperator>
+																												<Const ConstValue="(1)">
+																												</Const>
+																											</ScalarOperator>
+																										</Compare>
+																									</ScalarOperator>
+																									<ScalarOperator>
+																										<Compare CompareOp="EQ">
+																											<ScalarOperator>
+																												<Intrinsic FunctionName="has_access">
+																													<ScalarOperator>
+																														<Const ConstValue="&apos;DB&apos;">
+																														</Const>
+																													</ScalarOperator>
+																													<ScalarOperator>
+																														<IF>
+																															<Condition>
+																																<ScalarOperator>
+																																	<Compare CompareOp="EQ">
+																																		<ScalarOperator>
+																																			<Identifier>
+																																				<ColumnReference Column="ConstExpr1093">
+																																					<ScalarOperator>
+																																						<Intrinsic FunctionName="serverproperty">
+																																							<ScalarOperator>
+																																								<Const ConstValue="&apos;EngineEdition&apos;">
+																																								</Const>
+																																							</ScalarOperator>
+																																						</Intrinsic>
+																																					</ScalarOperator>
+																																				</ColumnReference>
+																																			</Identifier>
+																																		</ScalarOperator>
+																																		<ScalarOperator>
+																																			<Const ConstValue="5">
+																																			</Const>
+																																		</ScalarOperator>
+																																	</Compare>
+																																</ScalarOperator>
+																															</Condition>
+																															<Then>
+																																<ScalarOperator>
+																																	<Convert DataType="int" Style="0" Implicit="1">
+																																		<ScalarOperator>
+																																			<Identifier>
+																																				<ColumnReference Column="ConstExpr1094">
+																																					<ScalarOperator>
+																																						<Intrinsic FunctionName="db_id">
+																																							<ScalarOperator>
+																																								<Const ConstValue="">
+																																								</Const>
+																																							</ScalarOperator>
+																																						</Intrinsic>
+																																					</ScalarOperator>
+																																				</ColumnReference>
+																																			</Identifier>
+																																		</ScalarOperator>
+																																	</Convert>
+																																</ScalarOperator>
+																															</Then>
+																															<Else>
+																																<ScalarOperator>
+																																	<Identifier>
+																																		<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																																		</ColumnReference>
+																																	</Identifier>
+																																</ScalarOperator>
+																															</Else>
+																														</IF>
+																													</ScalarOperator>
+																													<ScalarOperator>
+																														<Const ConstValue="">
+																														</Const>
+																													</ScalarOperator>
+																													<ScalarOperator>
+																														<Const ConstValue="">
+																														</Const>
+																													</ScalarOperator>
+																												</Intrinsic>
+																											</ScalarOperator>
+																											<ScalarOperator>
+																												<Const ConstValue="(1)">
+																												</Const>
+																											</ScalarOperator>
+																										</Compare>
+																									</ScalarOperator>
+																								</Logical>
+																							</ScalarOperator>
+																						</Predicate>
+																					</Filter>
+																				</RelOp>
+																				<RelOp NodeId="9" PhysicalOp="Table-valued function" LogicalOp="Table-valued function" EstimateRows="1" EstimateIO="0" EstimateCPU="1.157e-06" AvgRowSize="139" EstimatedTotalSubtreeCost="1.157e-06" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																					<OutputList>
+																						<ColumnReference Table="[DBPROP]" Column="cl_logical_database_name">
+																						</ColumnReference>
+																					</OutputList>
+																					<TableValuedFunction>
+																						<DefinedValues>
+																							<DefinedValue>
+																								<ColumnReference Table="[DBPROP]" Column="cl_logical_database_name">
+																								</ColumnReference>
+																							</DefinedValue>
+																						</DefinedValues>
+																						<Object Table="[DBPROP]">
+																						</Object>
+																						<ParameterList>
+																							<ScalarOperator ScalarString="CASE WHEN serverproperty(&apos;EngineEdition&apos;)=5 THEN CONVERT_IMPLICIT(int,db_id(),0) ELSE [master].[sys].[sysdbreg].[id] END">
+																								<IF>
+																									<Condition>
+																										<ScalarOperator>
+																											<Compare CompareOp="EQ">
+																												<ScalarOperator>
+																													<Intrinsic FunctionName="serverproperty">
+																														<ScalarOperator>
+																															<Const ConstValue="&apos;EngineEdition&apos;">
+																															</Const>
+																														</ScalarOperator>
+																													</Intrinsic>
+																												</ScalarOperator>
+																												<ScalarOperator>
+																													<Const ConstValue="5">
+																													</Const>
+																												</ScalarOperator>
+																											</Compare>
+																										</ScalarOperator>
+																									</Condition>
+																									<Then>
+																										<ScalarOperator>
+																											<Convert DataType="int" Style="0" Implicit="1">
+																												<ScalarOperator>
+																													<Intrinsic FunctionName="db_id">
+																														<ScalarOperator>
+																															<Const ConstValue="">
+																															</Const>
+																														</ScalarOperator>
+																													</Intrinsic>
+																												</ScalarOperator>
+																											</Convert>
+																										</ScalarOperator>
+																									</Then>
+																									<Else>
+																										<ScalarOperator>
+																											<Identifier>
+																												<ColumnReference Database="[master]" Schema="[sys]" Table="[sysdbreg]" Column="id">
+																												</ColumnReference>
+																											</Identifier>
+																										</ScalarOperator>
+																									</Else>
+																								</IF>
+																							</ScalarOperator>
+																						</ParameterList>
+																					</TableValuedFunction>
+																				</RelOp>
+																			</NestedLoops>
+																		</RelOp>
+																	</ComputeScalar>
+																</RelOp>
+																<RelOp NodeId="10" PhysicalOp="Clustered Index Scan" LogicalOp="Clustered Index Scan" EstimateRows="1" EstimatedRowsRead="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="147" EstimatedTotalSubtreeCost="0.0032831" TableCardinality="0" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+																	<OutputList>
+																		<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="backup_start_date">
+																		</ColumnReference>
+																		<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="database_name">
+																		</ColumnReference>
+																	</OutputList>
+																	<IndexScan Ordered="0" ForcedIndex="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+																		<DefinedValues>
+																			<DefinedValue>
+																				<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="backup_start_date">
+																				</ColumnReference>
+																			</DefinedValue>
+																			<DefinedValue>
+																				<ColumnReference Database="[msdb]" Schema="[dbo]" Table="[backupset]" Alias="[b]" Column="database_name">
+																				</ColumnReference>
+																			</DefinedValue>
+																		</DefinedValues>
+																		<Object Database="[msdb]" Schema="[dbo]" Table="[backupset]" Index="[PK__backupse__21F79AAB19FE6376]" Alias="[b]" IndexKind="Clustered" Storage="RowStore">
+																		</Object>
+																	</IndexScan>
+																</RelOp>
+															</NestedLoops>
+														</RelOp>
+													</StreamAggregate>
+												</RelOp>
+											</StreamAggregate>
+										</RelOp>
+									</ComputeScalar>
+								</RelOp>
+							</ComputeScalar>
+						</RelOp>
+					</QueryPlan>
+				</StmtSimple>
+			</Statements>
+		</Batch>
+	</BatchSequence>
+</ShowPlanXML>
